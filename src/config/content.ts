@@ -161,7 +161,7 @@ export const CONTENT = {
       { nome: 'Dr. Gustavo Sá', cargo: 'Nutrólogo, CEO do Instituto LongLife e anfitrião do Plano 2027', foto: 'assets/fotos/gustavo-sa-quem-e.jpg', foco: '50% 18%' },
       { nome: 'Dr. Rafael Ultramar', cargo: 'Cirurgião de transplante capilar, à frente da Ultramar Day Clinic', foto: 'assets/fotos/rafael-ultramar.jpg', foco: '62% 30%' },
       { nome: 'Daniel Lara', cargo: 'Cofundador da Nova Dimensão, estrategista de marketing e vendas para médicos', foto: 'assets/fotos/daniel-lara.jpg', foco: '40% 15%' },
-      { nome: 'Júlio Lara', cargo: 'Cofundador da Nova Dimensão, à frente da área comercial', foto: 'assets/fotos/julio-lara.jpg', foco: '50% 12%' },
+      { nome: 'Julio Lara', cargo: 'Cofundador da Nova Dimensão, à frente da área comercial', foto: 'assets/fotos/julio-lara.jpg', foco: '50% 12%' },
       // convidado ainda não anunciado: avatar genérico
       { nome: 'Convidado especial', cargo: 'Surpresa', foto: null, foco: '50% 20%' },
     ] as { nome: string; cargo: string; foto: string | null; foco: string }[],
