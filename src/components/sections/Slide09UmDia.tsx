@@ -5,7 +5,7 @@ import { LuzesDesfocadas } from '@/components/ui/Letreiro'
 import { Reveal } from '@/components/ui/Reveal'
 
 /* retrato do ensaio (preto e branco), enviado pelo cliente para esta página */
-const FOTO = 'assets/fotos/gustavo-sa-retrato.webp'
+const FOTO = 'assets/fotos/gustavo-sa-retrato.jpg'
 
 /** Página 09 — 1 dia
  *  Molde: pág. 8 do CEEX ("2 DIAS de experiências únicas!": número gigante à

@@ -12,7 +12,7 @@ export function Slide06Anfitriao() {
     <div className="relative h-full w-full overflow-hidden bg-[#d2d2d0]">
       {/* foto com a pessoa centralizada na página */}
       <img
-        src="assets/bg/anfitriao.webp"
+        src="assets/bg/anfitriao.jpg"
         alt="Dr. Gustavo Sá, anfitrião do Plano 2027"
         width={2560}
         height={1080}

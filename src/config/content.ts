@@ -133,9 +133,9 @@ export const CONTENT = {
     ],
     pilula: 'Networking real entre médicos que estão construindo clínica, numa sala fechada e exclusiva.',
     fotos: [
-      { src: 'assets/fotos/jantar.webp', legenda: 'Jantar de véspera — mesa posta', foco: '50% 60%' },
-      { src: 'assets/fotos/gustavo-sa-consultorio.webp', legenda: 'Dr. Gustavo Sá', foco: '50% 32%' },
-      { src: 'assets/fotos/sala-amigo-tech.webp', legenda: 'Sala de evento da Amigo Tech', foco: '50% 55%' },
+      { src: 'assets/fotos/jantar.jpg', legenda: 'Jantar de véspera — mesa posta', foco: '50% 60%' },
+      { src: 'assets/fotos/gustavo-sa-consultorio.jpg', legenda: 'Dr. Gustavo Sá', foco: '50% 32%' },
+      { src: 'assets/fotos/sala-amigo-tech.jpg', legenda: 'Sala de evento da Amigo Tech', foco: '50% 55%' },
     ] as { src: string | null; legenda: string; foco: string }[],
   },
 
@@ -158,10 +158,10 @@ export const CONTENT = {
     apoio: 'Convidados que constroem negócio na medicina todos os dias.',
     // No CEEX vai o número de seguidores; aqui vai só o cargo.
     cards: [
-      { nome: 'Dr. Gustavo Sá', cargo: 'Nutrólogo, CEO do Instituto LongLife e anfitrião do Plano 2027', foto: 'assets/fotos/gustavo-sa-quem-e.webp', foco: '50% 18%' },
-      { nome: 'Dr. Rafael Ultramar', cargo: 'Cirurgião de transplante capilar, à frente da Ultramar Day Clinic', foto: 'assets/fotos/rafael-ultramar.webp', foco: '62% 30%' },
-      { nome: 'Daniel Lara', cargo: 'Cofundador da Nova Dimensão, estrategista de marketing e vendas para médicos', foto: 'assets/fotos/daniel-lara.webp', foco: '40% 15%' },
-      { nome: 'Júlio Lara', cargo: 'Cofundador da Nova Dimensão, à frente da área comercial', foto: 'assets/fotos/julio-lara.webp', foco: '50% 12%' },
+      { nome: 'Dr. Gustavo Sá', cargo: 'Nutrólogo, CEO do Instituto LongLife e anfitrião do Plano 2027', foto: 'assets/fotos/gustavo-sa-quem-e.jpg', foco: '50% 18%' },
+      { nome: 'Dr. Rafael Ultramar', cargo: 'Cirurgião de transplante capilar, à frente da Ultramar Day Clinic', foto: 'assets/fotos/rafael-ultramar.jpg', foco: '62% 30%' },
+      { nome: 'Daniel Lara', cargo: 'Cofundador da Nova Dimensão, estrategista de marketing e vendas para médicos', foto: 'assets/fotos/daniel-lara.jpg', foco: '40% 15%' },
+      { nome: 'Júlio Lara', cargo: 'Cofundador da Nova Dimensão, à frente da área comercial', foto: 'assets/fotos/julio-lara.jpg', foco: '50% 12%' },
       // convidado ainda não anunciado: avatar genérico
       { nome: 'Convidado especial', cargo: 'Surpresa', foto: null, foco: '50% 20%' },
     ] as { nome: string; cargo: string; foto: string | null; foco: string }[],
@@ -176,7 +176,7 @@ export const CONTENT = {
     ] as Trecho[],
     direita: 'É o mesmo time por trás dos lançamentos, eventos e salas fechadas do Dr. Gustavo Sá e do Dr. Rafael Ultramar.',
     /** foto do time da Nova Dimensão (colorida, enviada pelo cliente) */
-    imagem: 'assets/fotos/equipe-nova-dimensao.webp',
+    imagem: 'assets/fotos/equipe-nova-dimensao.jpg',
   },
 
   /** 15 — Onde a sua marca aparece */

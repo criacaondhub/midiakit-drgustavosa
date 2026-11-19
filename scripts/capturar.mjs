@@ -47,7 +47,18 @@ if (pdf) {
     process.stdout.write(`página ${n} ok\n`)
   }
   const out = resolve(process.env.PDF_OUT ?? 'MIDIA-KIT-PLANO-2027.pdf')
-  execFileSync('python', ['-I', '-c', 'import pymupdf,sys\nout=pymupdf.open()\nfor f in sys.argv[2:]:\n    out.insert_pdf(pymupdf.open(f))\nout.save(sys.argv[1], garbage=3, deflate=True)', out, ...partes])
+  // Junta as páginas. Peso: as fotos ficam em JPEG nos assets — o Chrome guarda
+  // JPEG como está, mas regrava WebP sem compressão (a foto da equipe ia de
+  // 455 KB para 5 MB). Não recomprimir imagens aqui: o Chrome grava os degradês
+  // de CSS como imagens e eles quebram no leitor do Chrome/Edge.
+  const juntar = [
+    'import pymupdf, sys',
+    'out = pymupdf.open()',
+    'for f in sys.argv[2:]:',
+    '    out.insert_pdf(pymupdf.open(f))',
+    'out.save(sys.argv[1], garbage=4, deflate=True)',
+  ].join('\n')
+  execFileSync('python', ['-I', '-c', juntar, out, ...partes])
   rmSync(tmp, { recursive: true, force: true })
   console.log('PDF:', out)
 } else {

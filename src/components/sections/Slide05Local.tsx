@@ -22,7 +22,7 @@ export function Slide05Local() {
     <div className="relative h-full w-full overflow-hidden bg-white text-[#1c1c1e]">
       {/* mapa da região bem clarinho, sumindo para a esquerda */}
       <img
-        src="assets/bg/mapa-amigo-tech-fade.webp"
+        src="assets/bg/mapa-amigo-tech.jpg"
         alt="Mapa da região da Amigo Tech, na Vila Olímpia, em São Paulo"
         width={3400}
         height={2000}

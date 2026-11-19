@@ -1,21 +1,40 @@
-import { useId, type ElementType } from 'react'
+import type { ElementType } from 'react'
 
 const DEGRADES = {
   azul: [
-    ['0%', '#003dac'],
-    ['52%', '#205fd5'],
-    ['100%', '#608df4'],
+    [0, '#003dac'],
+    [0.52, '#205fd5'],
+    [1, '#608df4'],
   ],
   destaque: [
-    ['0%', '#a9c2fb'],
-    ['45%', '#608df4'],
-    ['100%', '#3f72e6'],
+    [0, '#a9c2fb'],
+    [0.45, '#608df4'],
+    [1, '#3f72e6'],
   ],
 } as const
 
-/* métricas verticais da Inter (ascender / descender) para alinhar a linha de base */
-const ASC = 0.96875
-const DESC = 0.2412
+type Degrade = keyof typeof DEGRADES
+
+function rgb(hex: string) {
+  const h = hex.replace('#', '')
+  return [0, 2, 4].map((i) => Number.parseInt(h.slice(i, i + 2), 16))
+}
+
+/** Cor do degradê na posição t (0..1). */
+function corEm(degrade: Degrade, t: number) {
+  const stops = DEGRADES[degrade]
+  for (let i = 1; i < stops.length; i++) {
+    const [p1, c1] = stops[i]
+    const [p0, c0] = stops[i - 1]
+    if (t <= p1) {
+      const f = (t - p0) / (p1 - p0 || 1)
+      const a = rgb(c0)
+      const b = rgb(c1)
+      return `rgb(${a.map((v, k) => Math.round(v + (b[k] - v) * f)).join(',')})`
+    }
+  }
+  return stops[stops.length - 1][1]
+}
 
 type TextoDegradeProps = {
   linhas: readonly string[]
@@ -25,40 +44,35 @@ type TextoDegradeProps = {
   /** letter-spacing em em */
   tracking: number
   peso?: number
-  degrade?: keyof typeof DEGRADES
+  degrade?: Degrade
   className?: string
   as?: ElementType
 }
 
-/** Título com o degradê da ID desenhado em SVG (texto em vetor com
- *  preenchimento em degradê). Substitui o background-clip: text, que no PDF do
- *  Chrome saía com um contorno fino em volta e cortava a última letra. */
+/** Título no degradê da ID, com cada letra numa cor sólida tirada do degradê
+ *  (da primeira à última letra da linha). No tamanho dos títulos a passagem fica
+ *  igual a um degradê contínuo — e funciona em qualquer leitor de PDF.
+ *  (background-clip: text saía com contorno; texto SVG com degradê sumia no
+ *  leitor do Chrome/Edge.) */
 export function TextoDegrade({ linhas, tamanho, entrelinha, tracking, peso = 500, degrade = 'azul', className, as: Tag = 'h2' }: TextoDegradeProps) {
-  const id = useId().replace(/[^a-zA-Z0-9_-]/g, '')
-  const altura = tamanho * entrelinha
-  const base = (altura - (ASC + DESC) * tamanho) / 2 + ASC * tamanho
-  const fonte = { fontSize: tamanho, letterSpacing: `${tracking}em`, fontWeight: peso }
-
   return (
-    <Tag className={className} style={{ ...fonte, lineHeight: `${altura}px` }} aria-label={linhas.join(' ')}>
-      {linhas.map((linha, i) => (
-        <span key={i} aria-hidden className="relative block w-fit">
-          {/* o texto invisível dá o tamanho da linha; o SVG desenha por cima */}
-          <span className="invisible whitespace-nowrap">{linha}</span>
-          <svg className="absolute left-0 top-0 h-full w-full overflow-visible">
-            <defs>
-              <linearGradient id={`${id}-${i}`} x1="0" x2="1" y1="0" y2="0">
-                {DEGRADES[degrade].map(([offset, cor]) => (
-                  <stop key={offset} offset={offset} stopColor={cor} />
-                ))}
-              </linearGradient>
-            </defs>
-            <text x="0" y={base} fill={`url(#${id}-${i})`} style={fonte}>
-              {linha}
-            </text>
-          </svg>
-        </span>
-      ))}
+    <Tag
+      className={className}
+      style={{ fontSize: tamanho, lineHeight: entrelinha, letterSpacing: `${tracking}em`, fontWeight: peso }}
+    >
+      {linhas.map((linha, i) => {
+        const letras = [...linha]
+        const n = Math.max(letras.length - 1, 1)
+        return (
+          <span key={i} className="block whitespace-nowrap">
+            {letras.map((ch, k) => (
+              <span key={k} style={{ color: corEm(degrade, k / n) }}>
+                {ch}
+              </span>
+            ))}
+          </span>
+        )
+      })}
     </Tag>
   )
 }

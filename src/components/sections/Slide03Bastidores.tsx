@@ -11,7 +11,7 @@ export function Slide03Bastidores() {
 
   return (
     <div className="relative h-full w-full overflow-hidden text-white">
-      <Fundo src="assets/bg/consultorio.webp" posicao="50% 30%" />
+      <Fundo src="assets/bg/consultorio.jpg" posicao="50% 30%" />
       <div className="absolute inset-0 bg-black/50" />
       <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-black/75 via-black/40 to-transparent" />
 

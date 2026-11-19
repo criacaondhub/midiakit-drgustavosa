@@ -189,7 +189,7 @@ def salvar(arr: np.ndarray, nome: str, qualidade: int = 90) -> None:
 
 
 def foto(nome: str) -> Image.Image:
-    return Image.open(FOTOS / f"{nome}.webp").convert("RGB")
+    return Image.open(FOTOS / f"{nome}.jpg").convert("RGB")
 
 
 def cobrir(img: Image.Image, w: int, h: int, foco_y: float = 0.5) -> Image.Image:
@@ -318,7 +318,7 @@ def gerar_consultorio() -> None:
     mascara[-rampa:] = np.linspace(1, 0, rampa) ** 1.5
     m = mascara[None, :, None]
     fundo[:, x : x + pw] = frente * m + fundo[:, x : x + pw] * (1 - m)
-    salvar(grao(fundo, 1.2), "consultorio.webp", 92)
+    salvar(grao(fundo, 1.2), "consultorio.jpg", 92)
 
 
 def gerar_um_dia() -> None:
@@ -400,9 +400,7 @@ def gerar_desfocados() -> None:
         print("ok", destino.relative_to(RAIZ), "margem", m)
     # fotos desfocadas
     for origem, saida, raio in [
-        (OUT_BG / "anfitriao.webp", "anfitriao-desfocado.webp", 26),
-        (FOTOS / "gustavo-sa-quem-e.webp", "quem-e-desfocado.webp", 22),
-        (OUT_BG / "um-dia-foto.webp", "um-dia-foto-desfocado.webp", 34),
+        (FOTOS / "gustavo-sa-quem-e.jpg", "quem-e-desfocado.jpg", 22),
     ]:
         img = Image.open(origem).convert("RGB").filter(ImageFilter.GaussianBlur(raio))
         destino = OUT_BG / saida
@@ -419,7 +417,7 @@ def gerar_mapa() -> None:
     lum = np.asarray(img, dtype=np.float32)
     claro = 255 - (255 - lum) * 0.8          # cinzas claros, como no CEEX
     rgb = np.repeat(claro[..., None], 3, axis=2)
-    salvar(rgb, "mapa-amigo-tech.webp", 90)
+    salvar(rgb, "mapa-amigo-tech-cinza.webp", 90)
 
 
 def gerar_linhas_logo() -> None:
@@ -491,7 +489,7 @@ def gerar_marcas() -> None:
 def gerar_mapa_transparente() -> None:
     """05 — o fade do mapa (some para a esquerda, entra e sai no alto e embaixo)
     embutido na imagem, no lugar da máscara CSS (que sai com contorno no PDF)."""
-    mapa = Image.open(OUT_BG / "mapa-amigo-tech.webp").convert("RGB")
+    mapa = Image.open(OUT_BG / "mapa-amigo-tech-cinza.webp").convert("RGB")
     w, h = mapa.size
     x = np.linspace(0, 1, w, dtype=np.float32)
     y = np.linspace(0, 1, h, dtype=np.float32)
@@ -500,8 +498,11 @@ def gerar_mapa_transparente() -> None:
     alpha = (ay[:, None] * ax[None, :] * 255).astype(np.uint8)
     rgba = mapa.convert("RGBA")
     rgba.putalpha(Image.fromarray(alpha))
-    destino = OUT_BG / "mapa-amigo-tech-fade.webp"
-    rgba.save(destino, quality=90, method=6)
+    # já sobre o branco do fundo da página (JPEG, sem transparência: PDF leve)
+    fundo = Image.new("RGBA", rgba.size, (255, 255, 255, 255))
+    fundo.alpha_composite(rgba)
+    destino = OUT_BG / "mapa-amigo-tech.jpg"
+    fundo.convert("RGB").save(destino, quality=86, optimize=True, progressive=True)
     print("ok", destino.relative_to(RAIZ))
 
 
@@ -510,7 +511,7 @@ if __name__ == "__main__":
     gerar_capa()
     gerar_texturas()
     gerar_consultorio()
-    estender_estudio("gustavo-sa-anfitriao", "anfitriao.webp")
+    estender_estudio("gustavo-sa-anfitriao", "anfitriao.jpg")
     gerar_um_dia()
     gerar_um_dia_foto()
     gerar_na_sala()

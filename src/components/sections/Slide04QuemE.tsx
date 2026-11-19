@@ -15,7 +15,7 @@ export function Slide04QuemE() {
       {/* foto — recortada só pela borda do quadro */}
       <div className="absolute inset-y-0 left-[53.8%] right-0 overflow-hidden bg-[#d9d9d7]">
         <img
-          src="assets/fotos/gustavo-sa-quem-e.webp"
+          src="assets/fotos/gustavo-sa-quem-e.jpg"
           alt="Dr. Gustavo Sá, de óculos, com as mãos juntas"
           width={900}
           height={1125}
@@ -29,7 +29,7 @@ export function Slide04QuemE() {
           className="inset-y-0 right-0 w-[304px]"
           largura={76}
           cena={
-            <img src="assets/bg/quem-e-desfocado.webp" alt="" width={900} height={1125} className="h-full w-full object-cover" style={{ objectPosition: '50% 22%' }} />
+            <img src="assets/bg/quem-e-desfocado.jpg" alt="" width={900} height={1125} className="h-full w-full object-cover" style={{ objectPosition: '50% 22%' }} />
           }
         />
       </div>
