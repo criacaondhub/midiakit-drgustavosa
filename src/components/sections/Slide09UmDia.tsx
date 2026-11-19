@@ -4,8 +4,8 @@ import { FundoVidro } from '@/components/ui/FundoVidro'
 import { LuzesDesfocadas } from '@/components/ui/Letreiro'
 import { Reveal } from '@/components/ui/Reveal'
 
-/* foto real do ensaio, sem filtro (a versão azulada foi retirada) */
-const FOTO = 'assets/fotos/gustavo-sa-anfitriao.webp'
+/* retrato do ensaio (preto e branco), enviado pelo cliente para esta página */
+const FOTO = 'assets/fotos/gustavo-sa-retrato.webp'
 
 /** Página 09 — 1 dia
  *  Molde: pág. 8 do CEEX ("2 DIAS de experiências únicas!": número gigante à
@@ -25,10 +25,10 @@ export function Slide09UmDia() {
         <img
           src={FOTO}
           alt="Dr. Gustavo Sá, anfitrião do Plano 2027"
-          width={560}
-          height={800}
+          width={1200}
+          height={1802}
           className="h-full w-full object-cover"
-          style={{ objectPosition: '50% 0%' }}
+          style={{ objectPosition: '50% 12%' }}
         />
       </div>
 
