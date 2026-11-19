@@ -5,15 +5,14 @@ import { FundoVidro } from '@/components/ui/FundoVidro'
 import { Reveal } from '@/components/ui/Reveal'
 import { Simbolo } from '@/components/ui/Simbolo'
 import { Trechos } from '@/components/ui/Trechos'
+import { TextoDegrade } from '@/components/ui/TextoDegrade'
 
-const DEGRADE_ICONE = 'linear-gradient(180deg, #608df4, #205fd5 55%, #003dac)'
-const DEGRADE_DESTAQUE = 'linear-gradient(90deg, #a9c2fb, #608df4 45%, #3f72e6)'
 const COLUNAS = [
   { x: '6%', w: 485 },
   { x: '39.2%', w: 453 },
   { x: '70.6%', w: 450 },
 ]
-const titulo = 'text-[88px] font-medium uppercase leading-none tracking-[-0.055em]'
+const TITULO = { tamanho: 88, entrelinha: 1, tracking: -0.055, className: 'block' }
 
 /** Página 02 — O que é o Plano 2027
  *  Molde: pág. 2 do CEEX (título em pílulas com ícones na metade de cima,
@@ -25,7 +24,7 @@ export function Slide02OQueE() {
     <div className="relative h-full w-full bg-white text-tinta">
       {/* topo */}
       <Reveal className="absolute left-[115px] top-[40px]" y={0}>
-        <Simbolo className="h-[40px] text-cinza" />
+        <Simbolo className="h-[40px]" cor="cinza" />
       </Reveal>
       <Reveal className="absolute right-[115px] top-[52px]" y={0}>
         <Assinatura logo="nenhum" className="text-cinza" />
@@ -36,16 +35,14 @@ export function Slide02OQueE() {
         <div className="absolute inset-y-[-1px] left-[-300px] w-[1030px] rounded-full border border-linha" />
         <div className="absolute inset-y-[-1px] left-[730px] aspect-square rounded-full border border-linha">
           <Reveal className="flex h-full w-full items-center justify-center" delay={0.15}>
-            <Simbolo className="w-[56%]" fill={DEGRADE_ICONE} />
+            <Simbolo className="w-[56%]" cor="degrade" />
           </Reveal>
         </div>
         <Reveal className="absolute left-[115px] top-1/2 -translate-y-1/2" delay={0.05}>
-          <h2 className={`${titulo} text-degrade pb-[0.06em]`}>{c.linha1.antes}</h2>
+          <TextoDegrade linhas={[c.linha1.antes]} {...TITULO} />
         </Reveal>
         <Reveal className="absolute right-[115px] top-1/2 -translate-y-1/2" delay={0.1}>
-          <span className={`${titulo} block pb-[0.06em]`} style={{ backgroundImage: DEGRADE_DESTAQUE, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>
-            {c.linha1.depois}
-          </span>
+          <TextoDegrade as="span" linhas={[c.linha1.depois]} degrade="destaque" {...TITULO} />
         </Reveal>
       </div>
 
@@ -55,12 +52,12 @@ export function Slide02OQueE() {
           <div className="aspect-square h-full rounded-full border border-linha" />
           <div className="ml-[2px] flex aspect-square h-full items-center justify-center rounded-full border border-linha">
             <Reveal className="flex h-full w-full items-center justify-center" delay={0.2}>
-              <Simbolo className="w-[56%]" fill={DEGRADE_DESTAQUE} />
+              <Simbolo className="w-[56%]" cor="destaque" />
             </Reveal>
           </div>
         </div>
         <Reveal className="absolute left-[462px] top-1/2 -translate-y-1/2" delay={0.12}>
-          <span className={`${titulo} text-degrade block pb-[0.06em]`}>{c.linha2}</span>
+          <TextoDegrade as="span" linhas={[c.linha2]} {...TITULO} />
         </Reveal>
         <div className="absolute inset-y-[-1px] left-[calc(100%-392px)] w-[700px] rounded-full border border-linha">
           <Reveal className="absolute left-[72px] top-1/2 -translate-y-1/2" delay={0.25}>

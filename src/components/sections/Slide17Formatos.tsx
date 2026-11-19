@@ -2,6 +2,7 @@ import { CONTENT } from '@/config/content'
 import { Reveal } from '@/components/ui/Reveal'
 import { IconesCard, TopoClaro } from '@/components/ui/Topo'
 import { cn } from '@/lib/utils'
+import { TextoDegrade } from '@/components/ui/TextoDegrade'
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
@@ -19,7 +20,7 @@ export function Slide17Formatos() {
 
       <div className="absolute left-[115px] right-[115px] top-[140px]">
         <Reveal>
-          <h2 className="text-degrade whitespace-nowrap pb-[0.08em] text-[86px] font-medium uppercase leading-[0.98] tracking-[-0.055em]">{c.titulo}</h2>
+          <TextoDegrade linhas={[c.titulo]} tamanho={86} entrelinha={0.98} tracking={-0.055} />
         </Reveal>
         <Reveal delay={0.08} className="mt-[14px] w-[1100px]">
           <p className="text-[27px] font-light leading-[1.4] text-cinza text-pretty">{c.apoio}</p>

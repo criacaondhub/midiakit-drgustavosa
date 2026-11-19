@@ -38,7 +38,7 @@ export function Slide11Temas() {
             </div>
           </div>
           <div className="absolute inset-y-[-1px] right-[-1px] flex aspect-square items-center justify-center rounded-full border border-linha">
-            <Simbolo className="w-[52%]" fill="linear-gradient(90deg, #a9c2fb, #608df4 45%, #3f72e6)" />
+            <Simbolo className="w-[52%]" cor="destaque" />
           </div>
         </Reveal>
       </div>

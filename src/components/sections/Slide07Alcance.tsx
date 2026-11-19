@@ -2,6 +2,7 @@ import { CONTENT } from '@/config/content'
 import { Assinatura } from '@/components/ui/Assinatura'
 import { FundoVidro } from '@/components/ui/FundoVidro'
 import { Reveal } from '@/components/ui/Reveal'
+import { TextoDegrade } from '@/components/ui/TextoDegrade'
 
 /** Página 07 — Alcance em números
  *  Molde: pág. 7 do CEEX ("Creator economy em números": título à esquerda,
@@ -18,19 +19,14 @@ export function Slide07Alcance() {
       {/* bloco superior direito: assinatura e frase centralizadas no bloco, como no CEEX */}
       <div className="absolute left-[54.4%] right-0 top-0 flex h-[126px] items-center justify-center">
         <Reveal y={0}>
-          <Assinatura logo="inicio" className="text-cinza" />
+          <Assinatura logo="inicio" cor="cinza" className="text-cinza" />
         </Reveal>
       </div>
 
       <div className="absolute inset-x-0 top-0 flex h-[50%] items-center">
         <Reveal className="ml-[103px]">
-          <h2 className="text-degrade pb-[0.08em] text-[86px] font-medium uppercase leading-[0.98] tracking-[-0.055em]">
-            {c.titulo.map((l) => (
-              <span key={l} className="block">
-                {l}
-              </span>
-            ))}
-          </h2>
+          {/* entrelinha 1.08: com menos, o acento do "Ú" encostava no "U" de GUSTAVO */}
+          <TextoDegrade linhas={c.titulo} tamanho={86} entrelinha={1.08} tracking={-0.055} />
         </Reveal>
       </div>
 

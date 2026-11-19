@@ -454,6 +454,57 @@ def gerar_linhas_logo() -> None:
         print("ok", destino.relative_to(RAIZ), "glifo", largura, "x", alt, "margem", m)
 
 
+def gerar_marcas() -> None:
+    """Logo PLANO 2027 já pintado em cada cor usada nos ícones e assinaturas.
+    (Máscaras CSS e background-clip saem com um contorno fino no PDF do Chrome;
+    imagem pronta sai limpa.) Margem de 3% para nada encostar na borda."""
+    largura = 1000
+    a = logo_alpha(largura)
+    m = 30
+    w, h = a.width + 2 * m, a.height + 2 * m
+    alpha = Image.new("L", (w, h), 0)
+    alpha.paste(a, (m, m))
+    xs = np.linspace(0, 1, w, dtype=np.float32)
+
+    def faixa(stops: list[tuple[float, str]]) -> np.ndarray:
+        pos = np.array([s[0] for s in stops], dtype=np.float32)
+        cores = np.stack([hex_rgb(s[1]) for s in stops])
+        linha = np.stack([np.interp(xs, pos, cores[:, c]) for c in range(3)], axis=-1)
+        return np.repeat(linha[None, :, :], h, axis=0)
+
+    cores = {
+        "branco": faixa([(0, "#FFFFFF"), (1, "#FFFFFF")]),
+        "cinza": faixa([(0, "#7C7C7C"), (1, "#7C7C7C")]),
+        "tinta": faixa([(0, "#5B5B5E"), (1, "#5B5B5E")]),
+        "azul": faixa([(0, AZUL), (1, AZUL)]),
+        "degrade": faixa([(0, AZUL_PROFUNDO), (0.55, AZUL), (1, DESTAQUE)]),
+        "destaque": faixa([(0, "#A9C2FB"), (0.5, DESTAQUE), (1, "#3F72E6")]),
+    }
+    OUT_LOGO.mkdir(parents=True, exist_ok=True)
+    for nome, rgb in cores.items():
+        img = Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8)).convert("RGBA")
+        img.putalpha(alpha)
+        img.save(OUT_LOGO / f"marca-{nome}.png", optimize=True)
+    print("ok marcas", w, "x", h, "margem", m)
+
+
+def gerar_mapa_transparente() -> None:
+    """05 — o fade do mapa (some para a esquerda, entra e sai no alto e embaixo)
+    embutido na imagem, no lugar da máscara CSS (que sai com contorno no PDF)."""
+    mapa = Image.open(OUT_BG / "mapa-amigo-tech.webp").convert("RGB")
+    w, h = mapa.size
+    x = np.linspace(0, 1, w, dtype=np.float32)
+    y = np.linspace(0, 1, h, dtype=np.float32)
+    ax = np.clip((x - 0.24) / (0.54 - 0.24), 0, 1)
+    ay = np.minimum(np.clip(y / 0.12, 0, 1), np.clip((1 - y) / 0.14, 0, 1))
+    alpha = (ay[:, None] * ax[None, :] * 255).astype(np.uint8)
+    rgba = mapa.convert("RGBA")
+    rgba.putalpha(Image.fromarray(alpha))
+    destino = OUT_BG / "mapa-amigo-tech-fade.webp"
+    rgba.save(destino, quality=90, method=6)
+    print("ok", destino.relative_to(RAIZ))
+
+
 if __name__ == "__main__":
     gerar_simbolo()
     gerar_capa()
@@ -467,3 +518,5 @@ if __name__ == "__main__":
     gerar_desfocados()
     gerar_mapa()
     gerar_linhas_logo()
+    gerar_marcas()
+    gerar_mapa_transparente()

@@ -4,6 +4,7 @@ import { FundoVidro } from '@/components/ui/FundoVidro'
 import { Reveal } from '@/components/ui/Reveal'
 import { Simbolo } from '@/components/ui/Simbolo'
 import { Trechos } from '@/components/ui/Trechos'
+import { TextoDegrade } from '@/components/ui/TextoDegrade'
 
 const PALAVRA = 'absolute bottom-[34px] left-[-16px] whitespace-nowrap text-[470px] font-normal leading-none tracking-[-0.045em] text-white'
 
@@ -39,19 +40,13 @@ export function Slide18Fecho() {
       {/* bloco superior direito: tudo centralizado no bloco, como na pág. 21 do CEEX */}
       <div className="absolute left-[54.4%] right-0 top-0 flex h-[126px] items-center justify-center">
         <Reveal y={0}>
-          <Assinatura logo="fim" className="text-cinza" />
+          <Assinatura logo="fim" cor="cinza" className="text-cinza" />
         </Reveal>
       </div>
 
       <div className="absolute left-[172px] top-0 flex h-[50%] items-center">
         <Reveal>
-          <h2 className="text-degrade pb-[0.06em] text-[100px] font-medium uppercase leading-[0.98] tracking-[-0.05em]">
-            {c.titulo.map((l) => (
-              <span key={l} className="block">
-                {l}
-              </span>
-            ))}
-          </h2>
+          <TextoDegrade linhas={c.titulo} tamanho={100} entrelinha={0.98} tracking={-0.05} />
         </Reveal>
       </div>
 
@@ -63,7 +58,7 @@ export function Slide18Fecho() {
         </Reveal>
         <Reveal delay={0.18} className="mt-[26px] w-[578px]">
           <div className="flex h-[86px] items-center gap-[24px] rounded-[10px] border border-azul/50 bg-azul/[0.05] px-[46px] text-[26px] font-normal text-azul">
-            <Simbolo className="h-[30px]" />
+            <Simbolo className="h-[30px]" cor="azul" />
             {c.botao}
           </div>
         </Reveal>

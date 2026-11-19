@@ -9,8 +9,8 @@ const MAPA = { w: 2040, h: 1200, pinoX: 1020, pinoY: 599 }
 /* onde o endereço fica na página: à direita, na altura do meio */
 const PINO = { x: 1420, y: 560 }
 
-const MASCARA =
-  'linear-gradient(to right, transparent 24%, #000 54%), linear-gradient(to bottom, transparent 0%, #000 12%, #000 86%, transparent 100%)'
+/* o fade do mapa (some para a esquerda, entra e sai no alto e embaixo) vem
+   embutido na imagem — máscara CSS sai com contorno no PDF */
 
 /** Página 05 — Local, data e público
  *  Molde: pág. 5 do CEEX (dados com ícones à esquerda, mapa clarinho ao fundo).
@@ -22,7 +22,7 @@ export function Slide05Local() {
     <div className="relative h-full w-full overflow-hidden bg-white text-[#1c1c1e]">
       {/* mapa da região bem clarinho, sumindo para a esquerda */}
       <img
-        src="assets/bg/mapa-amigo-tech.webp"
+        src="assets/bg/mapa-amigo-tech-fade.webp"
         alt="Mapa da região da Amigo Tech, na Vila Olímpia, em São Paulo"
         width={3400}
         height={2000}
@@ -32,10 +32,6 @@ export function Slide05Local() {
           top: PINO.y - MAPA.pinoY,
           width: MAPA.w,
           height: MAPA.h,
-          WebkitMaskImage: MASCARA,
-          maskImage: MASCARA,
-          WebkitMaskComposite: 'source-in',
-          maskComposite: 'intersect',
         }}
       />
       {/* pino do endereço no azul da ID */}

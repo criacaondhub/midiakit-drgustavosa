@@ -56,7 +56,7 @@ export function Slide04QuemE() {
         </Reveal>
         <Reveal delay={0.25}>
           <div className="inline-flex items-center gap-[18px] rounded-full border border-linha px-[30px] py-[18px] text-[24px] font-light text-cinza">
-            <Simbolo className="h-[24px] text-azul" />
+            <Simbolo className="h-[24px]" cor="azul" />
             {c.pilula}
           </div>
         </Reveal>

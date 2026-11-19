@@ -50,7 +50,7 @@ export function Slide12Palco() {
                 {p.nome}
               </span>
               <span className="flex h-[48px] w-[62px] items-center justify-center rounded-full bg-white">
-                <Simbolo className="h-[17px]" fill="linear-gradient(90deg, #003dac, #205fd5 55%, #608df4)" />
+                <Simbolo className="h-[17px]" cor="degrade" />
               </span>
             </div>
             <div className="min-h-0 flex-1 border-t border-white/40 p-[12px]">

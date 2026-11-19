@@ -18,7 +18,7 @@ export function Slide13Realizacao() {
         <div className="absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2 -rotate-90">
           <Assinatura logo="nenhum" className="whitespace-nowrap text-tinta/70" />
         </div>
-        <Simbolo className="absolute bottom-[54px] left-1/2 h-[30px] -translate-x-1/2 text-tinta/70" />
+        <Simbolo className="absolute bottom-[54px] left-1/2 h-[30px] -translate-x-1/2" cor="tinta" />
       </div>
 
       {/* foto do time da Nova Dimensão ocupando o quadrante inteiro */}
