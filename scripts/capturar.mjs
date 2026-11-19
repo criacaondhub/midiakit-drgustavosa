@@ -34,6 +34,14 @@ async function abrir(url) {
 }
 
 if (pdf) {
+  // 1) fundo da capa (cena + vidro, sem os textos) como uma imagem única: no PDF a
+  //    página 1 fica leve e os apps (WhatsApp, e-mail…) conseguem gerar a prévia
+  await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 1.5 })
+  await abrir(`${BASE}&paginas=1&fundo`)
+  await (await page.$('section')).screenshot({ path: resolve('public/assets/bg/capa-pdf.jpg'), type: 'jpeg', quality: 88 })
+  process.stdout.write('fundo da capa ok\n')
+  await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 1 })
+
   await abrir(BASE)
   const total = (await page.$$('section')).length
   const paginas = only.length ? only : Array.from({ length: total }, (_, i) => i + 1)
@@ -47,18 +55,10 @@ if (pdf) {
     process.stdout.write(`página ${n} ok\n`)
   }
   const out = resolve(process.env.PDF_OUT ?? 'MIDIA-KIT-PLANO-2027.pdf')
-  // Junta as páginas. Peso: as fotos ficam em JPEG nos assets — o Chrome guarda
-  // JPEG como está, mas regrava WebP sem compressão (a foto da equipe ia de
-  // 455 KB para 5 MB). Não recomprimir imagens aqui: o Chrome grava os degradês
-  // de CSS como imagens e eles quebram no leitor do Chrome/Edge.
-  const juntar = [
-    'import pymupdf, sys',
-    'out = pymupdf.open()',
-    'for f in sys.argv[2:]:',
-    '    out.insert_pdf(pymupdf.open(f))',
-    'out.save(sys.argv[1], garbage=4, deflate=True)',
-  ].join('\n')
-  execFileSync('python', ['-I', '-c', juntar, out, ...partes])
+  // 2) junta as páginas + informações do arquivo + miniaturas (scripts/juntar_pdf.py).
+  //    Peso: as fotos ficam em JPEG nos assets (o Chrome guarda JPEG como está, mas
+  //    regrava WebP sem compressão).
+  execFileSync('python', ['-I', resolve('scripts/juntar_pdf.py'), out, ...partes], { stdio: 'inherit' })
   rmSync(tmp, { recursive: true, force: true })
   console.log('PDF:', out)
 } else {
