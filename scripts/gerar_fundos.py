@@ -506,6 +506,68 @@ def gerar_mapa_transparente() -> None:
     print("ok", destino.relative_to(RAIZ))
 
 
+def gerar_quadros_perspectiva() -> list[dict]:
+    """10 — os quadros inclinados (perspective(1600px) rotateY(±16deg)) já
+    desenhados na foto, em JPEG, para o PDF. Com a transformação 3D no CSS o
+    Chrome grava o quadro como imagem sem compressão (~300 KB cada).
+    Retorna a caixa de cada imagem em relação ao quadro (px da página)."""
+    W, H, borda, d, s, M = 605, 389, 7, 1600.0, 1.5, 70
+    FUNDO = (243, 243, 241)
+    saidas = []
+    for nome, foto_nome, ang, origem, foco in [
+        ("quadro-jantar", "jantar", 16, "direita", (0.5, 0.6)),
+        ("quadro-sala", "sala-amigo-tech", -16, "esquerda", (0.5, 0.55)),
+    ]:
+        # quadro "reto": moldura branca + foto em object-cover
+        quadro = Image.new("RGB", (round(W * s), round(H * s)), (255, 255, 255))
+        iw, ih = round((W - 2 * borda) * s), round((H - 2 * borda) * s)
+        img = Image.open(FOTOS / f"{foto_nome}.jpg").convert("RGB")
+        esc = max(iw / img.width, ih / img.height)
+        img = img.resize((round(img.width * esc), round(img.height * esc)), Image.LANCZOS)
+        x0 = round((img.width - iw) * foco[0]); y0 = round((img.height - ih) * foco[1])
+        quadro.paste(img.crop((x0, y0, x0 + iw, y0 + ih)), (round(borda * s), round(borda * s)))
+
+        # projeção dos cantos (mesma conta do CSS: origem, rotateY, perspective)
+        ox, oy = (W if origem == "direita" else 0.0), H / 2
+        a = np.deg2rad(ang)
+        def proj(x: float, y: float) -> tuple[float, float]:
+            X, Y = x - ox, y - oy
+            x1, z1 = X * np.cos(a), -X * np.sin(a)
+            w = 1 - z1 / d
+            return ox + x1 / w, oy + Y / w
+        cantos = [proj(0, 0), proj(W, 0), proj(W, H), proj(0, H)]
+        bx0 = min(c[0] for c in cantos); by0 = min(c[1] for c in cantos)
+        bx1 = max(c[0] for c in cantos); by1 = max(c[1] for c in cantos)
+        cx0, cy0 = bx0 - M, by0 - M
+        cw, ch = bx1 - bx0 + 2 * M, by1 - by0 + 2 * M
+        dst = [((c[0] - cx0) * s, (c[1] - cy0) * s) for c in cantos]
+        src = [(0, 0), (quadro.width, 0), (quadro.width, quadro.height), (0, quadro.height)]
+        # homografia destino -> origem (coeficientes do PIL)
+        A, B = [], []
+        for (X, Y), (u, v) in zip(dst, src):
+            A += [[X, Y, 1, 0, 0, 0, -u * X, -u * Y], [0, 0, 0, X, Y, 1, -v * X, -v * Y]]
+            B += [u, v]
+        coef = np.linalg.solve(np.array(A, dtype=np.float64), np.array(B, dtype=np.float64))
+        tam = (round(cw * s), round(ch * s))
+        torto = quadro.transform(tam, Image.PERSPECTIVE, tuple(coef), Image.BICUBIC)
+        mascara = Image.new("L", quadro.size, 255).transform(tam, Image.PERSPECTIVE, tuple(coef), Image.BICUBIC)
+        # sombra (0 20px 50px rgba(0,0,0,.18)) e composição sobre o fundo da página
+        tela = Image.new("RGB", tam, FUNDO)
+        sombra = Image.new("L", tam, 0)
+        sombra.paste(mascara, (0, round(20 * s)))
+        sombra = sombra.filter(ImageFilter.GaussianBlur(25 * s))
+        sombra_a = np.asarray(sombra, dtype=np.float32) / 255 * 0.18
+        t = np.asarray(tela, dtype=np.float32) * (1 - sombra_a[..., None])
+        tela = Image.fromarray(t.astype(np.uint8))
+        tela.paste(torto, (0, 0), mascara)
+        destino = FOTOS / f"{nome}.jpg"
+        tela.save(destino, quality=86, optimize=True, progressive=True)
+        caixa = {"nome": nome, "left": round(cx0, 2), "top": round(cy0, 2), "w": round(cw, 2), "h": round(ch, 2)}
+        print("ok", destino.relative_to(RAIZ), caixa, round(destino.stat().st_size / 1024), "KB")
+        saidas.append(caixa)
+    return saidas
+
+
 if __name__ == "__main__":
     gerar_simbolo()
     gerar_capa()
@@ -521,3 +583,4 @@ if __name__ == "__main__":
     gerar_linhas_logo()
     gerar_marcas()
     gerar_mapa_transparente()
+    gerar_quadros_perspectiva()

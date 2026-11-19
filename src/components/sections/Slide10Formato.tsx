@@ -1,15 +1,24 @@
 import { CONTENT } from '@/config/content'
 import { Pendente } from '@/components/ui/Pendente'
+import { useSlide } from '@/components/deck/SlideContext'
 import { Reveal } from '@/components/ui/Reveal'
 
 const INCLINACAO = ['perspective(1600px) rotateY(16deg)', 'none', 'perspective(1600px) rotateY(-16deg)']
 const ORIGEM = ['right center', 'center', 'left center']
+/* Quadros já inclinados para o PDF (scripts/gerar_fundos.py → gerar_quadros_perspectiva):
+   posição/tamanho da imagem em relação ao quadro de 605×389 da página 1920×1080. */
+const QUADROS_PRONTOS: ({ src: string; left: number; top: number; w: number; h: number } | null)[] = [
+  { src: 'assets/fotos/quadro-jantar.jpg', left: -114.23, top: -92.63, w: 789.23, h: 574.26 },
+  null,
+  { src: 'assets/fotos/quadro-sala.jpg', left: -70, top: -92.63, w: 789.23, h: 574.26 },
+]
 
 /** Página 10 — O formato
  *  Molde: pág. 9 do CEEX ("3 PALCOS. 2 DIAS. 1 MOVIMENTO.": título em 3 linhas
  *  com a última em faixa colorida, lista à direita, fotos embaixo). */
 export function Slide10Formato() {
   const c = CONTENT.formato
+  const { isStatic } = useSlide()
   const [l1, l2, l3] = c.titulo
 
   return (
@@ -22,7 +31,8 @@ export function Slide10Formato() {
         </h2>
       </Reveal>
 
-      <div className="absolute left-[59%] right-[100px] top-[150px] space-y-[30px]">
+      {/* z-10: fica na frente da margem de sombra dos quadros prontos do PDF */}
+      <div className="absolute left-[59%] right-[100px] top-[150px] z-10 space-y-[30px]">
         {c.itens.map((it, i) => (
           <Reveal key={it.titulo} delay={0.1 + i * 0.07}>
             <p className="text-[30px] font-normal leading-[1.16] tracking-[0.02em] text-pretty">
@@ -38,20 +48,34 @@ export function Slide10Formato() {
       {/* três quadros embaixo */}
       {/* subidos para os quadros aparecerem inteiros (antes saíam cortados pela base) */}
       <div className="absolute bottom-[56px] left-[24px] right-[24px] flex h-[36%] items-end gap-[28px]">
-        {c.fotos.map((f, i) => (
-          <Reveal key={f.legenda} delay={0.3 + i * 0.08} className="h-full flex-1" y={40}>
-            <div
-              className="h-full w-full overflow-hidden border-[7px] border-white bg-white shadow-[0_20px_50px_rgba(0,0,0,0.18)]"
-              style={{ transform: INCLINACAO[i], transformOrigin: ORIGEM[i] }}
-            >
-              {f.src ? (
-                <img src={f.src} alt={f.legenda} className="h-full w-full object-cover" style={{ objectPosition: f.foco }} />
+        {c.fotos.map((f, i) => {
+          const pronto = QUADROS_PRONTOS[i]
+          return (
+            <Reveal key={f.legenda} delay={0.3 + i * 0.08} className={`relative h-full flex-1 ${i === 1 ? 'z-10' : ''}`} y={40}>
+              {isStatic && pronto ? (
+                // no PDF: o quadro já inclinado em JPEG (a inclinação 3D no CSS vira
+                // imagem sem compressão no PDF); mesma posição e tamanho do quadro
+                <img
+                  src={pronto.src}
+                  alt={f.legenda}
+                  className="absolute max-w-none"
+                  style={{ left: pronto.left, top: pronto.top, width: pronto.w, height: pronto.h }}
+                />
               ) : (
-                <Pendente rotulo={f.legenda} />
+                <div
+                  className="h-full w-full overflow-hidden border-[7px] border-white bg-white shadow-[0_20px_50px_rgba(0,0,0,0.18)]"
+                  style={{ transform: INCLINACAO[i], transformOrigin: ORIGEM[i] }}
+                >
+                  {f.src ? (
+                    <img src={f.src} alt={f.legenda} className="h-full w-full object-cover" style={{ objectPosition: f.foco }} />
+                  ) : (
+                    <Pendente rotulo={f.legenda} />
+                  )}
+                </div>
               )}
-            </div>
-          </Reveal>
-        ))}
+            </Reveal>
+          )
+        })}
       </div>
     </div>
   )
