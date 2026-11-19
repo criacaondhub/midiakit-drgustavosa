@@ -36,7 +36,8 @@ export function Slide10Formato() {
       </div>
 
       {/* três quadros embaixo */}
-      <div className="absolute bottom-[-24px] left-[24px] right-[24px] flex h-[40%] items-end gap-[28px]">
+      {/* subidos para os quadros aparecerem inteiros (antes saíam cortados pela base) */}
+      <div className="absolute bottom-[56px] left-[24px] right-[24px] flex h-[36%] items-end gap-[28px]">
         {c.fotos.map((f, i) => (
           <Reveal key={f.legenda} delay={0.3 + i * 0.08} className="h-full flex-1" y={40}>
             <div
