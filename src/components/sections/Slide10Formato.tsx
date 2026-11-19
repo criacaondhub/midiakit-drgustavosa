@@ -18,7 +18,7 @@ const QUADROS_PRONTOS: ({ src: string; left: number; top: number; w: number; h: 
  *  com a última em faixa colorida, lista à direita, fotos embaixo). */
 export function Slide10Formato() {
   const c = CONTENT.formato
-  const { isStatic } = useSlide()
+  const { pdf } = useSlide()
   const [l1, l2, l3] = c.titulo
 
   return (
@@ -52,7 +52,7 @@ export function Slide10Formato() {
           const pronto = QUADROS_PRONTOS[i]
           return (
             <Reveal key={f.legenda} delay={0.3 + i * 0.08} className={`relative h-full flex-1 ${i === 1 ? 'z-10' : ''}`} y={40}>
-              {isStatic && pronto ? (
+              {pdf && pronto ? (
                 // no PDF: o quadro já inclinado em JPEG (a inclinação 3D no CSS vira
                 // imagem sem compressão no PDF); mesma posição e tamanho do quadro
                 <img

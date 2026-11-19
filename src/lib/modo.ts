@@ -1,3 +1,3 @@
-/** ?fundo — usado só na exportação: esconde os textos (tudo que entra com
- *  <Reveal>) para capturar o fundo da capa como uma imagem única. */
+/** ?fundo — usado só na exportação: os fundos com vidro (<FundoPdf>) ficam ao
+ *  vivo para serem fotografados (o resto da página é escondido pelo script). */
 export const MODO_FUNDO = new URLSearchParams(window.location.search).has('fundo')

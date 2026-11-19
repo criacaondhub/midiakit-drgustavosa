@@ -1,7 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useSlide } from '@/components/deck/SlideContext'
-import { MODO_FUNDO } from '@/lib/modo'
 
 type RevealProps = {
   children: ReactNode
@@ -23,7 +22,7 @@ export function Reveal({ children, className, style, delay = 0, y = 28 }: Reveal
 
   if (isStatic)
     return (
-      <div className={className} style={MODO_FUNDO ? { ...style, visibility: 'hidden' } : style}>
+      <div className={className} style={style}>
         {children}
       </div>
     )

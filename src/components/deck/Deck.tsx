@@ -163,7 +163,7 @@ function PrintDeck({ slides }: { slides: SlideDef[] }) {
           className="relative overflow-hidden break-after-page"
           style={{ width: STAGE_W, height: STAGE_H, backgroundColor: fundo }}
         >
-          <SlideContext.Provider value={{ state: 'current', isStatic: true }}>
+          <SlideContext.Provider value={{ state: 'current', isStatic: true, pdf: id }}>
             <Stage width={STAGE_W} height={STAGE_H} scale={1}>
               <Component />
             </Stage>

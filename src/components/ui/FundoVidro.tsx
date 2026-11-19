@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { FUNDO_AZUL } from './Letreiro'
+import { FundoPdf } from './FundoPdf'
 import { Vidro } from './Vidro'
 
 /** Tons de fundo da ID por trás do vidro. As "luzes" são manchas suaves que
@@ -85,7 +86,7 @@ export function FundoVidro({
   const fundo = <div className="absolute inset-0" style={{ background: t.fundo }} />
 
   return (
-    <div aria-hidden className={cn('absolute inset-0 isolate overflow-hidden', className)}>
+    <FundoPdf className={cn('absolute inset-0 isolate overflow-hidden', className)}>
       {fundo}
       {children}
       <Vidro
@@ -104,6 +105,6 @@ export function FundoVidro({
           </>
         }
       />
-    </div>
+    </FundoPdf>
   )
 }

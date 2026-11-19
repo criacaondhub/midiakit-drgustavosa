@@ -1,5 +1,6 @@
 import { CONTENT } from '@/config/content'
 import { Assinatura } from '@/components/ui/Assinatura'
+import { FundoPdf } from '@/components/ui/FundoPdf'
 import { FundoVidro } from '@/components/ui/FundoVidro'
 import { Reveal } from '@/components/ui/Reveal'
 import { Simbolo } from '@/components/ui/Simbolo'
@@ -19,7 +20,7 @@ export function Slide18Fecho() {
     <div className="relative h-full w-full overflow-hidden bg-white text-tinta">
       {/* metade de baixo: palavra gigante no degradê azul; nítida à esquerda e
           atrás do vidro canelado à direita (como no CEEX) */}
-      <div className="absolute inset-x-0 bottom-0 top-[50%] overflow-hidden">
+      <FundoPdf className="absolute inset-x-0 bottom-0 top-[50%] overflow-hidden">
         <FundoVidro
           tom="azul"
           vidroClassName="inset-y-0 left-[52%] right-0"
@@ -31,7 +32,7 @@ export function Slide18Fecho() {
         </FundoVidro>
         {/* borda da placa de vidro */}
         <div aria-hidden className="absolute inset-y-0 left-[52%] w-px bg-white/45 shadow-[-6px_0_18px_rgba(0,20,90,0.18)]" />
-      </div>
+      </FundoPdf>
 
       {/* fios */}
       <div className="absolute left-[54.4%] top-0 h-[50%] w-px bg-linha" />

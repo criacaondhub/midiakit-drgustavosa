@@ -1,5 +1,6 @@
 import { CONTENT } from '@/config/content'
 import { Fundo } from '@/components/ui/Fundo'
+import { FundoPdf } from '@/components/ui/FundoPdf'
 import { Reveal } from '@/components/ui/Reveal'
 import { Trechos } from '@/components/ui/Trechos'
 
@@ -11,9 +12,12 @@ export function Slide03Bastidores() {
 
   return (
     <div className="relative h-full w-full overflow-hidden text-white">
-      <Fundo src="assets/bg/consultorio.jpg" posicao="50% 30%" />
-      <div className="absolute inset-0 bg-black/50" />
-      <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-black/75 via-black/40 to-transparent" />
+      {/* no PDF: foto + escurecimento numa imagem só, recortada na página */}
+      <FundoPdf className="absolute inset-0" escala={1}>
+        <Fundo src="assets/bg/consultorio.jpg" posicao="50% 30%" />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-black/75 via-black/40 to-transparent" />
+      </FundoPdf>
 
       {/* tipografia da pág. 3 do CEEX: regular leve, entreletra aberto,
           destaque em bold de entreletra normal, linhas soltas */}

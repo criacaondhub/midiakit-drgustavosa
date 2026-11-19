@@ -452,13 +452,11 @@ def gerar_linhas_logo() -> None:
         print("ok", destino.relative_to(RAIZ), "glifo", largura, "x", alt, "margem", m)
 
 
-def gerar_marcas() -> None:
+def gerar_marcas(largura: int = 500, m: int = 15) -> None:
     """Logo PLANO 2027 já pintado em cada cor usada nos ícones e assinaturas.
     (Máscaras CSS e background-clip saem com um contorno fino no PDF do Chrome;
     imagem pronta sai limpa.) Margem de 3% para nada encostar na borda."""
-    largura = 1000
     a = logo_alpha(largura)
-    m = 30
     w, h = a.width + 2 * m, a.height + 2 * m
     alpha = Image.new("L", (w, h), 0)
     alpha.paste(a, (m, m))

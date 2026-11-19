@@ -5,8 +5,7 @@ import { Justificado } from '@/components/ui/Justificado'
 import { Reveal } from '@/components/ui/Reveal'
 import { FUNDO_AZUL } from '@/components/ui/Letreiro'
 import { Vidro } from '@/components/ui/Vidro'
-import { useSlide } from '@/components/deck/SlideContext'
-import { MODO_FUNDO } from '@/lib/modo'
+import { FundoPdf } from '@/components/ui/FundoPdf'
 
 /* Linhas do logo já desfocadas (scripts/gerar_fundos.py → gerar_linhas_logo):
    tamanho do glifo e margem (3 × raio) de cada imagem. */
@@ -58,22 +57,17 @@ const CENA = (
  *  PLANO 2027 gigante atrás do vidro canelado (fractal glass). */
 export function Slide01Capa() {
   const c = CONTENT.capa
-  const { isStatic } = useSlide()
 
   return (
     <div className="relative isolate h-full w-full overflow-hidden text-white">
       {/* cena atrás do vidro + vidro canelado com refração (cada faixa recebe uma
           cópia da cena, ampliada e deslocada — guia ceex-fractal-glass-hero) */}
-      {isStatic && !MODO_FUNDO ? (
-        // no PDF: o fundo (cena + vidro) como uma imagem única, capturada pela
-        // exportação — a página 1 fica leve e os apps conseguem gerar a prévia
-        <img src="assets/bg/capa-pdf.jpg" alt="" aria-hidden width={2880} height={1620} className="absolute inset-0 h-full w-full" />
-      ) : (
-        <>
-          {CENA}
-          <Vidro className="inset-0" cena={CENA} largura={137} refracao={1.45} desloc={-0.22} />
-        </>
-      )}
+      {/* no PDF: cena + vidro como uma imagem única (página 1 leve: os apps
+          conseguem gerar a prévia) */}
+      <FundoPdf className="absolute inset-0">
+        {CENA}
+        <Vidro className="inset-0" cena={CENA} largura={137} refracao={1.45} desloc={-0.22} />
+      </FundoPdf>
 
       <Reveal className="absolute right-[115px] top-[57px]" y={0}>
         <Assinatura logo="fim" />

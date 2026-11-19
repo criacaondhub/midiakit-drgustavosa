@@ -1,5 +1,7 @@
 import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { cn } from '@/lib/utils'
+import { useSlide } from '@/components/deck/SlideContext'
+import { MODO_FUNDO } from '@/lib/modo'
 
 type Medidas = { x: number; y: number; w: number; h: number; pw: number; ph: number }
 
@@ -57,11 +59,21 @@ export function Vidro({
   }, [])
 
   const n = m ? Math.ceil(m.w / largura) : 0
+  const { pdf } = useSlide()
+
+  // no PDF: a imagem fotografada na exportação (ver FundoPdf)
+  if (pdf && !MODO_FUNDO)
+    return (
+      <div ref={ref} aria-hidden className={cn('fr-strips', className)} style={style}>
+        <img src={`assets/pdf/${pdf}.jpg`} alt="" className="absolute inset-0 size-full max-w-none" />
+      </div>
+    )
 
   return (
     <div
       ref={ref}
       aria-hidden
+      data-pdf-fundo={pdf ?? ''}
       className={cn('fr-strips isolate', className)}
       style={{ '--fr-sombra': sombra, '--fr-fio': fio, ...style } as CSSProperties}
     >

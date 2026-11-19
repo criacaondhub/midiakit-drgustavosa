@@ -19,6 +19,9 @@ const BASE = process.env.DECK_URL ?? 'http://localhost:5173/?print'
 const args = process.argv.slice(2)
 const pdf = args.includes('--pdf')
 const only = args.filter((a) => /^\d+$/.test(a)).map(Number)
+/* fundos com vidro no PDF: resolução (× 1920×1080) e qualidade do JPEG */
+const ESCALA_FUNDO = Number(process.env.ESCALA_FUNDO ?? 1.25)
+const QUALIDADE_FUNDO = Number(process.env.QUALIDADE_FUNDO ?? 76)
 
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, args: ['--force-color-profile=srgb'] })
 const page = await browser.newPage()
@@ -34,18 +37,51 @@ async function abrir(url) {
 }
 
 if (pdf) {
-  // 1) fundo da capa (cena + vidro, sem os textos) como uma imagem única: no PDF a
-  //    página 1 fica leve e os apps (WhatsApp, e-mail…) conseguem gerar a prévia
-  await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 1.5 })
-  await abrir(`${BASE}&paginas=1&fundo`)
-  await (await page.$('section')).screenshot({ path: resolve('public/assets/bg/capa-pdf.jpg'), type: 'jpeg', quality: 88 })
-  process.stdout.write('fundo da capa ok\n')
-  await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 1 })
-
   await abrir(BASE)
   const total = (await page.$$('section')).length
   const paginas = only.length ? only : Array.from({ length: total }, (_, i) => i + 1)
   const tmp = mkdtempSync(join(tmpdir(), 'midia-kit-'))
+
+  // 1) fundos (<FundoPdf>) fotografados sozinhos → assets/pdf/<id>.jpg.
+  //    Vidro: em vetor cada faixa leva uma cópia inteira da cena e o PDF fica
+  //    pesado; como imagem única é leve e a página 1 gera prévia nos apps.
+  //    Fotos de fundo: já saem recortadas na página (o que fica fora não vai).
+  await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: ESCALA_FUNDO })
+  const fundos = []
+  for (const n of paginas) {
+    await abrir(`${BASE}&paginas=${n}&fundo`)
+    const alvos = await page.$$('[data-pdf-fundo]:not([data-pdf-fundo] [data-pdf-fundo])')
+    if (alvos.length > 1) throw new Error(`página ${n}: mais de um <FundoPdf> (só um por página)`)
+    if (!alvos.length) continue
+    const [alvo] = alvos
+    // esconde tudo que não é o fundo (nem quem o contém), para fotografar só ele
+    const { id, escala } = await alvo.evaluate((t) => {
+      for (const el of document.querySelectorAll('section *'))
+        if (!t.contains(el) && !el.contains(t)) el.style.visibility = 'hidden'
+      return { id: t.dataset.pdfFundo, escala: t.dataset.pdfEscala }
+    })
+    const png = join(tmp, `${id}.png`)
+    await alvo.screenshot({ path: png })
+    // fator de redução quando o bloco pede outra resolução (ex.: fotos em 1×)
+    const fator = (Number(escala) || ESCALA_FUNDO) / ESCALA_FUNDO
+    fundos.push(png, resolve(`public/assets/pdf/${id}.jpg`), String(fator))
+  }
+  if (fundos.length) {
+    const jpg = [
+      'import sys',
+      'from PIL import Image',
+      'a = sys.argv[1:]',
+      'for png, jpg, f in zip(a[::3], a[1::3], a[2::3]):',
+      '    im = Image.open(png).convert("RGB")',
+      '    if float(f) != 1:',
+      '        im = im.resize((round(im.width * float(f)), round(im.height * float(f))), Image.LANCZOS)',
+      `    im.save(jpg, quality=${QUALIDADE_FUNDO}, optimize=True, progressive=True)`,
+    ].join('\n')
+    execFileSync('python', ['-I', '-c', jpg, ...fundos])
+    process.stdout.write(`fundos em imagem: ${fundos.length / 3}\n`)
+  }
+  await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 1 })
+
   const partes = []
   for (const n of paginas) {
     await abrir(`${BASE}&paginas=${n}`)
