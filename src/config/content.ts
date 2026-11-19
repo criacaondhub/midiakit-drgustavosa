@@ -134,7 +134,7 @@ export const CONTENT = {
     pilula: 'Networking real entre médicos que estão construindo clínica, numa sala fechada e exclusiva.',
     fotos: [
       { src: 'assets/fotos/jantar.webp', legenda: 'Jantar de véspera — mesa posta', foco: '50% 60%' },
-      { src: 'assets/fotos/gustavo-sa-consultorio.webp', legenda: 'Dr. Gustavo Sá', foco: '50% 32%' },
+      { src: 'assets/fotos/gustavo-sa-retrato.webp', legenda: 'Dr. Gustavo Sá', foco: '50% 15%' },
       { src: 'assets/fotos/sala-amigo-tech.webp', legenda: 'Sala de evento da Amigo Tech', foco: '50% 55%' },
     ] as { src: string | null; legenda: string; foco: string }[],
   },
