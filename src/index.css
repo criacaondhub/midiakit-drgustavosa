@@ -1,0 +1,125 @@
+@import "tailwindcss";
+@source "./**/*.{ts,tsx}";
+
+@theme {
+  /* Cores — ID Plano 2027 (estáticos aprovados) */
+  --color-azul: #205fd5;
+  --color-azul-profundo: #003dac;
+  --color-azul-logo: #1e3fa8;
+  --color-destaque: #608df4;
+  --color-tinta: #0e0e10;
+  --color-cinza: #7c7c7c;
+  --color-linha: #c4c4c4;
+  --color-nevoa: #ededeb;
+  --color-background-dark: #04060c;
+
+  /* Tipografia — a mesma dos estáticos do Plano 2027 */
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Movimento — curva e duração do deck de referência */
+  --ease-deck: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Degradê da ID no lugar do azul → ciano do CEEX */
+@utility bg-degrade {
+  background-image: linear-gradient(100deg, var(--color-azul-profundo) 0%, var(--color-azul) 52%, var(--color-destaque) 100%);
+}
+
+@utility text-degrade {
+  background-image: linear-gradient(100deg, var(--color-azul-profundo) 0%, var(--color-azul) 52%, var(--color-destaque) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Sem palavra sozinha na última linha */
+@utility text-pretty {
+  text-wrap: pretty;
+}
+
+/* ⚠️ REGRA ABSOLUTA: nenhum reset fora de @layer. */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-optical-sizing: auto;
+    background-color: var(--color-background-dark);
+    color: var(--color-tinta);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  img {
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+}
+
+/* Fractal glass com REFRAÇÃO (guia "ceex-fractal-glass-hero.md"):
+   cada faixa recebe uma cópia da cena, ampliada a partir do centro da faixa
+   e deslocada — as letras quebram nas emendas como vidro canelado de verdade.
+   Não usa backdrop-filter, então sai igual no PDF. */
+@layer components {
+  .fr-strips {
+    position: absolute;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .fr-strip {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+  }
+
+  /* brilho de cada faixa: escuro à esquerda, luz forte perto da borda direita */
+  .fr-strip::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 8, 90, 0.55) 0%,
+      rgba(0, 8, 90, 0) 30%,
+      rgba(255, 255, 255, 0) 55%,
+      rgba(255, 255, 255, 0.65) 88%,
+      rgba(255, 255, 255, 0.15) 100%
+    );
+    mix-blend-mode: soft-light;
+    opacity: var(--fr-sombra, 1);
+  }
+
+  /* linha fina de luz na borda direita */
+  .fr-strip::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 1px;
+    background: var(--fr-fio, rgba(255, 255, 255, 0.18));
+    z-index: 1;
+  }
+}
+
+/* Exportação em PDF: uma página 16:9 por slide */
+@page {
+  size: 1920px 1080px;
+  margin: 0;
+}
+
+/* Elementos cortados de propósito pela borda (ex.: pílulas da pág. 16) faziam
+   a impressão do Chrome encolher a página inteira para caber. Trava a largura. */
+@media print {
+  html,
+  body {
+    width: 1920px;
+    overflow: hidden;
+  }
+}
